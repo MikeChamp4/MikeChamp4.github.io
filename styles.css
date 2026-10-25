@@ -75,7 +75,7 @@ a { color: inherit; text-decoration: none; }
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 70px 0 40px;
 }
 
@@ -136,10 +136,20 @@ a { color: inherit; text-decoration: none; }
 .btn svg { width: 18px; height: 18px; }
 
 .side-foot {
+  margin-top: auto;
+  padding-top: 24px;
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
+.gh-nick {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-faint);
+  letter-spacing: 0.01em;
+  transition: color var(--transition);
+}
+.gh-nick:hover { color: var(--accent); }
 
 /* ============ CONTROLS (theme + lang) ============ */
 .controls {
