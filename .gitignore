@@ -1,0 +1,23 @@
+# Secrets / environment
+.env
+.env.*
+*.key
+*.pem
+secrets.*
+credentials*.json
+config.local.*
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+.cache/
+
+# System / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
