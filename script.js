@@ -422,13 +422,8 @@ async function loadProjects() {
     // filter by topic
     repos = repos.filter(r => Array.isArray(r.topics) && r.topics.includes(TOPIC) && !r.fork);
 
-    // load languages in parallel
-    await Promise.all(repos.map(async r => {
-      try {
-        const lr = await fetch(r.languages_url);
-        r._languages = lr.ok ? Object.keys(await lr.json()) : [];
-      } catch (e) { r._languages = []; }
-    }));
+    // primary language already comes in the repos list — no extra API calls
+    repos.forEach(r => { r._languages = r.language ? [r.language] : []; });
 
     cachedRepos = repos;
     renderProjects(repos);
