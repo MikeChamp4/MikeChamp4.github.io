@@ -65,14 +65,64 @@ const I18N = {
 };
 
 // ================= TITLES (editable data) =================
-// Fill each entry: { main, issuer, year }. Leave empty to hide the section.
+// Each entry: { main: {ca,es,en}, issuer, year: {ca,es,en} }.
+// issuer is a proper noun — shown the same in every language.
+// Leave the array empty to hide the section.
 const TITLES = [
-  { main: "Curso de especialización en IA y Big Data", issuer: "Institut Obert de Catalunya, Barcelona", year: "2025 — Act." },
-  { main: "Grado Superior en Desarrollo de Aplicaciones Multiplataforma (DAM)", issuer: "Institut Vidal i Barraquer, Tarragona", year: "2022 — 2024" },
-  { main: "Gama de cursos Java FullStack", issuer: "OpenWebinars", year: "2023" },
-  { main: "Linux Essentials", issuer: "Linux Professional Institute (LPI)", year: "2022" },
-  { main: "Conceptos básicos de ciberseguridad", issuer: "Microsoft Learn", year: "2024" },
-  { main: "Título de Monitor de Lleure", issuer: "Joventut Cambrils", year: "2022" },
+  {
+    main: {
+      ca: "Curs d'especialització en IA i Big Data",
+      es: "Curso de especialización en IA y Big Data",
+      en: "Specialization Course in AI and Big Data",
+    },
+    issuer: "Institut Obert de Catalunya, Barcelona",
+    year: { ca: "2025 — Act.", es: "2025 — Act.", en: "2025 — Present" },
+  },
+  {
+    main: {
+      ca: "Grau Superior en Desenvolupament d'Aplicacions Multiplataforma (DAM)",
+      es: "Grado Superior en Desarrollo de Aplicaciones Multiplataforma (DAM)",
+      en: "Higher National Diploma in Cross-Platform Application Development (DAM)",
+    },
+    issuer: "Institut Vidal i Barraquer, Tarragona",
+    year: { ca: "2022 — 2024", es: "2022 — 2024", en: "2022 — 2024" },
+  },
+  {
+    main: {
+      ca: "Gamma de cursos Java FullStack",
+      es: "Gama de cursos Java FullStack",
+      en: "Java FullStack course track",
+    },
+    issuer: "OpenWebinars",
+    year: { ca: "2023", es: "2023", en: "2023" },
+  },
+  {
+    main: {
+      ca: "Linux Essentials",
+      es: "Linux Essentials",
+      en: "Linux Essentials",
+    },
+    issuer: "Linux Professional Institute (LPI)",
+    year: { ca: "2022", es: "2022", en: "2022" },
+  },
+  {
+    main: {
+      ca: "Conceptes bàsics de ciberseguretat",
+      es: "Conceptos básicos de ciberseguridad",
+      en: "Cybersecurity Fundamentals",
+    },
+    issuer: "Microsoft Learn",
+    year: { ca: "2024", es: "2024", en: "2024" },
+  },
+  {
+    main: {
+      ca: "Títol de Monitor de Lleure",
+      es: "Título de Monitor de Ocio (Lleure)",
+      en: "Youth Leisure Monitor Certificate",
+    },
+    issuer: "Joventut Cambrils",
+    year: { ca: "2022", es: "2022", en: "2022" },
+  },
 ];
 
 // ================= EXPERIENCE (editable data) =================
@@ -80,7 +130,7 @@ const TITLES = [
 // period is shown as-is in every language; role/summary are per-language.
 const EXPERIENCE = [
   {
-    period: "Jun 2024 — Act.",
+    period: { ca: "Jun 2024 — Act.", es: "Jun 2024 — Act.", en: "Jun 2024 — Present" },
     role: {
       ca: "Backend Developer · GenAI — Inetum",
       es: "Backend Developer · GenAI — Inetum",
@@ -94,7 +144,7 @@ const EXPERIENCE = [
     tags: ["Python", "FastAPI", "RAG", "LangChain", "Docker", "Kubernetes", "Linux"],
   },
   {
-    period: "8 meses",
+    period: { ca: "8 mesos", es: "8 meses", en: "8 months" },
     role: {
       ca: "Tècnic Auxiliar / Editor — Tècnic Center",
       es: "Técnico Auxiliar / Editor — Tècnic Center",
@@ -108,7 +158,7 @@ const EXPERIENCE = [
     tags: ["Shopify", "SEO", "Google Analytics", "Adobe"],
   },
   {
-    period: "4 semanas",
+    period: { ca: "4 setmanes", es: "4 semanas", en: "4 weeks" },
     role: {
       ca: "Tècnic Auxiliar — MBO Amersfoort (Països Baixos)",
       es: "Técnico Auxiliar — MBO Amersfoort (Países Bajos)",
@@ -239,7 +289,7 @@ function initScrollSpy() {
 }
 
 // ================= TITLES RENDER =================
-function renderTitles() {
+function renderTitles(lang) {
   const section = document.getElementById("titlesSection");
   const list = document.getElementById("titlesList");
   if (!Array.isArray(TITLES) || TITLES.length === 0) {
@@ -248,14 +298,18 @@ function renderTitles() {
     return;
   }
   section.hidden = false;
-  list.innerHTML = TITLES.map(it => `
+  list.innerHTML = TITLES.map(it => {
+    const main = (it.main && (it.main[lang] || it.main.es)) || "";
+    const year = (it.year && (it.year[lang] || it.year.es)) || "";
+    return `
     <li class="title-item">
       <div>
-        <div class="title-main">${escapeHtml(it.main || "")}</div>
+        <div class="title-main">${escapeHtml(main)}</div>
         ${it.issuer ? `<div class="title-issuer">${escapeHtml(it.issuer)}</div>` : ""}
       </div>
-      ${it.year ? `<div class="title-year">${escapeHtml(it.year)}</div>` : ""}
-    </li>`).join("");
+      ${year ? `<div class="title-year">${escapeHtml(year)}</div>` : ""}
+    </li>`;
+  }).join("");
 }
 
 // ================= EXPERIENCE RENDER =================
@@ -271,12 +325,15 @@ function renderExperience(lang) {
   list.innerHTML = EXPERIENCE.map(it => {
     const role = (it.role && (it.role[lang] || it.role.en)) || "";
     const summary = (it.summary && (it.summary[lang] || it.summary.en)) || "";
+    const period = typeof it.period === "object"
+      ? (it.period[lang] || it.period.es || "")
+      : (it.period || "");
     const tags = (it.tags || []).map(x => `<span class="chip">${escapeHtml(x)}</span>`).join("");
     return `
     <li class="exp-item">
       <div class="exp-head">
         <span class="exp-role">${escapeHtml(role)}</span>
-        ${it.period ? `<span class="exp-period">${escapeHtml(it.period)}</span>` : ""}
+        ${period ? `<span class="exp-period">${escapeHtml(period)}</span>` : ""}
       </div>
       ${summary ? `<p class="exp-summary">${summary}</p>` : ""}
       ${tags ? `<div class="tech-chips" style="margin-top:12px">${tags}</div>` : ""}
