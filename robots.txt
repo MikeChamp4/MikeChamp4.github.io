@@ -1,0 +1,9 @@
+# https://MikeChamp4.github.io/
+
+User-agent: *
+Allow: /$
+Allow: /index.html
+Disallow: /.git/
+Disallow: /node_modules/
+
+Sitemap: https://MikeChamp4.github.io/sitemap.xml
